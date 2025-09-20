@@ -5,12 +5,14 @@ import Shell from '@/components/Shell';
 import Modal from '@/components/Modal';
 import { getAuthHash, setAuthHash, getEmail, startSession } from '@/lib/storage';
 import { sha256 } from '@/lib/auth';
+import { useToast } from '@/components/ToastProvider';
 
 export default function LoginPage(){
   const [email, setEmailState] = useState<string>('');
   const [p, setP] = useState('');
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const toast = useToast();
 
   useEffect(()=>{ setEmailState(getEmail() || ''); }, []);
 
@@ -21,14 +23,14 @@ export default function LoginPage(){
     const hash = await sha256(p);
     if (hash === getAuthHash()) {
       startSession();
-      location.href = '/dashboard';
+      toast.show('Welcome back!');
+      setTimeout(() => { location.href = '/dashboard'; }, 500);
     } else setError('Incorrect password.');
   };
 
   const onReset = () => {
-    // Clear only password hash, keep email and data
     setAuthHash('');
-    location.href = '/'; // go to signup (email will be pre-filled)
+    location.href = '/';
   };
 
   return (

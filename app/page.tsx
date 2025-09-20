@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Shell from '@/components/Shell';
 import { getAuthHash, setAuthHash, getEmail, setEmail, startSession } from '@/lib/storage';
 import { sha256 } from '@/lib/auth';
+import { useToast } from '@/components/ToastProvider';
 
 export default function Home() {
   const [hasAuth, setHasAuth] = useState<boolean>(false);
@@ -11,6 +12,7 @@ export default function Home() {
   const [p1, setP1] = useState('');
   const [p2, setP2] = useState('');
   const [error, setError] = useState<string>('');
+  const toast = useToast();
 
   useEffect(() => {
     setHasAuth(!!getAuthHash());
@@ -24,7 +26,8 @@ export default function Home() {
     setEmail(email);
     setAuthHash(await sha256(p1));
     startSession();
-    location.href = '/dashboard';
+    toast.show('Account created successfully.');
+    setTimeout(() => { location.href = '/dashboard'; }, 500);
   };
 
   return (
