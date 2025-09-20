@@ -1,29 +1,5 @@
 
 'use client';
-type Props = {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  message: string;
-  confirmText?: string;
-  cancelText?: string;
-  variant?: 'default' | 'success' | 'danger';
-};
-export default function Modal({ isOpen, onClose, onConfirm, title, message, confirmText='Confirm', cancelText='Cancel', variant='default' }: Props){
-  if(!isOpen) return null;
-  const confirmBase = 'px-4 py-2 rounded-lg text-white';
-  const confirmClass = variant==='danger' ? `${confirmBase} bg-red-600` : variant==='success' ? `${confirmBase} bg-green-600` : `${confirmBase} bg-neutral-700`;
-  return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div className="bg-neutral-900 rounded-xl p-6 shadow-xl w-full max-w-md text-center">
-        <h2 className="text-lg font-semibold mb-2">{title}</h2>
-        <p className="text-sm text-neutral-300 mb-4">{message}</p>
-        <div className="flex justify-center gap-4">
-          <button className="px-4 py-2 rounded-lg bg-neutral-700 text-white" onClick={onClose}>{cancelText}</button>
-          <button className={confirmClass} onClick={onConfirm}>{confirmText}</button>
-        </div>
-      </div>
-    </div>
-  );
-}
+type Props={isOpen:boolean;onClose:()=>void;onConfirm:()=>void;title:string;message:string;confirmText?:string;cancelText?:string;variant?:'default'|'success'|'danger';};
+export default function Modal({isOpen,onClose,onConfirm,title,message,confirmText='Confirm',cancelText='Cancel',variant='default'}:Props){if(!isOpen)return null;const base='px-4 py-2 rounded-lg text-white';const cc=variant==='danger'?base+' bg-red-600':variant==='success'?base+' bg-green-600':base+' bg-neutral-700';
+return(<div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"><div className="bg-neutral-900 rounded-xl p-6 shadow-xl w-full max-w-md text-center"><h2 className="text-lg font-semibold mb-2">{title}</h2><p className="text-sm text-neutral-300 mb-4">{message}</p><div className="flex justify-center gap-4"><button className="px-4 py-2 rounded-lg bg-neutral-700 text-white" onClick={onClose}>{cancelText}</button><button className={cc} onClick={onConfirm}>{confirmText}</button></div></div></div>);}
