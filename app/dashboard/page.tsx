@@ -1,1 +1,77 @@
-'use client';import Protected from '@/components/Protected';import Shell from '@/components/Shell';import { useEffect,useMemo,useState } from 'react';import { Bar, Doughnut } from 'react-chartjs-2';import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';ChartJS.register(ArcElement,BarElement,CategoryScale,LinearScale,Tooltip,Legend);export default function Dashboard(){const [tx,setTx]=useState<any[]>([]);useEffect(()=>{const uid=localStorage.getItem('cashbook:userId');if(uid) fetch('/api/transactions?userId='+uid).then(r=>r.json()).then(setTx);},[]);const totals=useMemo(()=>{const m:any={};tx.forEach((t:any)=>{if(!m[t.currency])m[t.currency]={income:0,expense:0};m[t.currency][t.type]+=t.amount;});return m;},[tx]);const byCat=useMemo(()=>{const m:any={};tx.forEach((t:any)=>{const k=`${t.currency}:${t.type}:${t.category}`;m[k]=(m[k]||0)+t.amount;});return m;},[tx]);const l:string[]=[];const d:number[]=[];Object.entries(totals).forEach(([cur,vals]:any)=>{l.push(`Income (${cur})`);d.push(vals.income);l.push(`Expense (${cur})`);d.push(vals.expense);});return(<Protected><Shell><div className="flex items-center gap-2 mb-6"><img src="/logo.png" className="h-8" alt="logo"/><h2 className="text-lg font-semibold">Dashboard</h2></div><div className="grid md:grid-cols-3 gap-4">{Object.entries(totals).map(([cur,v]:any)=>(<div key={cur} className="card"><div className="text-sm text-neutral-400">Income ({cur})</div><div className="text-2xl font-semibold">{v.income.toLocaleString()}</div><div className="text-sm text-neutral-400 mt-3">Expense ({cur})</div><div className="text-2xl font-semibold">{v.expense.toLocaleString()}</div><div className="text-sm text-neutral-400 mt-3">Balance ({cur})</div><div className="text-2xl font-semibold">{(v.income-v.expense).toLocaleString()}</div></div>))}{Object.keys(totals).length===0&&<div className="card">No data yet.</div>}</div><div className="grid md:grid-cols-2 gap-6 mt-6"><div className="card"><h2 className="text-lg font-semibold mb-4">Totals by Type</h2><Doughnut data={{labels:l,datasets:[{data:d}]}}/></div><div className="card"><h2 className="text-lg font-semibold mb-4">By Category</h2><Bar data={{labels:Object.keys(byCat),datasets:[{label:'Amount',data:Object.values(byCat)}]}}/></div></div></Shell></Protected>);}
+'use client';
+import Shell from '@/components/Shell';
+import Protected from '@/components/Protected';
+import { useEffect, useMemo, useState } from 'react';
+import { Bar, Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+
+export default function Dashboard(){
+  const [tx, setTx] = useState<any[]>([]);
+
+  useEffect(()=>{
+    const uid = localStorage.getItem('cashbook:userId');
+    if (uid) fetch('/api/transactions?userId='+uid).then(r=>r.json()).then(setTx);
+  },[]);
+
+  const totals = useMemo(()=>{
+    const m:any = {};
+    tx.forEach((t:any)=>{
+      if (!m[t.currency]) m[t.currency] = { income: 0, expense: 0 };
+      m[t.currency][t.type] += t.amount;
+    });
+    return m;
+  }, [tx]);
+
+  const byCat = useMemo(()=>{
+    const m:any = {};
+    tx.forEach((t:any)=>{
+      const key = `${t.category?.name||'Uncategorized'} (${t.currency})`;
+      m[key] = (m[key]||0) + t.amount;
+    });
+    return m;
+  },[tx]);
+
+  const doughLabels:string[] = [];
+  const doughData:number[] = [];
+  Object.entries(totals).forEach(([cur, vals]: any) => {
+    doughLabels.push(`Income (${cur})`); doughData.push(vals.income);
+    doughLabels.push(`Expense (${cur})`); doughData.push(vals.expense);
+  });
+
+  return (
+    <Protected>
+      <Shell>
+        <div className="flex items-center gap-2 mb-6">
+          <img src="/logo.png" className="h-8" alt="logo" />
+          <h2 className="text-lg font-semibold">Dashboard</h2>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-4">
+          {Object.entries(totals).map(([cur, v]: any)=>(
+            <div key={cur} className="card">
+              <div className="text-sm text-neutral-400">Income ({cur})</div>
+              <div className="text-2xl font-semibold">{v.income.toLocaleString()}</div>
+              <div className="text-sm text-neutral-400 mt-3">Expense ({cur})</div>
+              <div className="text-2xl font-semibold">{v.expense.toLocaleString()}</div>
+              <div className="text-sm text-neutral-400 mt-3">Balance ({cur})</div>
+              <div className="text-2xl font-semibold">{(v.income - v.expense).toLocaleString()}</div>
+            </div>
+          ))}
+          {Object.keys(totals).length===0 && <div className="card">No data yet.</div>}
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 mt-6">
+          <div className="card">
+            <h2 className="text-lg font-semibold mb-4">Totals by Type</h2>
+            <Doughnut data={{ labels: doughLabels, datasets: [{ data: doughData }] }} />
+          </div>
+          <div className="card">
+            <h2 className="text-lg font-semibold mb-4">By Category</h2>
+            <Bar data={{ labels: Object.keys(byCat), datasets: [{ label: 'Amount', data: Object.values(byCat) }] }} />
+          </div>
+        </div>
+      </Shell>
+    </Protected>
+  );
+}

@@ -1,1 +1,13 @@
-import { NextResponse } from 'next/server';import { prisma } from '@/lib/prisma';export async function DELETE(_:Request,{params}:{params:{id:string}}){await prisma.transaction.delete({where:{id:params.id}});return NextResponse.json({ok:true});}export async function PUT(req:Request,{params}:{params:{id:string}}){const b=await req.json();const t=await prisma.transaction.update({where:{id:params.id},data:b});return NextResponse.json(t);}
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+
+export async function DELETE(_: Request, { params }: { params: { id: string } }){
+  await prisma.transaction.delete({ where: { id: params.id } });
+  return NextResponse.json({ ok: true });
+}
+
+export async function PUT(req: Request, { params }: { params: { id: string } }){
+  const b = await req.json();
+  const t = await prisma.transaction.update({ where: { id: params.id }, data: b });
+  return NextResponse.json(t);
+}

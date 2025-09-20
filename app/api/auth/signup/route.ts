@@ -1,1 +1,13 @@
-import { NextResponse } from 'next/server';import { prisma } from '@/lib/prisma';import { sha256 } from '@/lib/crypto';export async function POST(req:Request){const {email,password}=await req.json();if(!email||!password)return NextResponse.json({error:'Missing'},{status:400});const exists=await prisma.user.findUnique({where:{email}});if(exists)return NextResponse.json({error:'Email already exists'},{status:400});const user=await prisma.user.create({data:{email,passwordHash:sha256(password)}});await prisma.rates.create({data:{userId:user.id,usdToSsp:1500,kesToSsp:10}});return NextResponse.json({userId:user.id});}
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { sha256 } from '@/lib/crypto';
+
+export async function POST(req: Request){
+  const { email, password } = await req.json();
+  if (!email || !password) return NextResponse.json({ error: 'Missing' }, { status: 400 });
+  const exists = await prisma.user.findUnique({ where: { email } });
+  if (exists) return NextResponse.json({ error: 'Email already exists' }, { status: 400 });
+  const user = await prisma.user.create({ data: { email, passwordHash: sha256(password) } });
+  await prisma.rates.create({ data: { userId: user.id, usdToSsp: 1500, kesToSsp: 10 } });
+  return NextResponse.json({ userId: user.id });
+}

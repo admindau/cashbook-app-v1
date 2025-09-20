@@ -1,1 +1,14 @@
-@tailwind base;@tailwind components;@tailwind utilities;:root{color-scheme:dark}body{@apply bg-black text-white}.input{@apply w-full px-3 py-2 rounded-lg bg-neutral-900 border border-neutral-700 outline-none}.btn{@apply px-3 py-2 rounded-lg border border-neutral-700 hover:border-neutral-500 transition inline-flex items-center gap-2}.btn-primary{@apply bg-white text-black font-semibold}.card{@apply bg-neutral-950 border border-neutral-800 rounded-xl p-6}.badge{@apply inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs border border-neutral-700 bg-neutral-900}.table{@apply w-full text-sm}.table th,.table td{@apply border-b border-neutral-800 py-3 text-left}.link{@apply text-blue-400 underline}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+body { @apply bg-black text-white; }
+.input { @apply w-full px-3 py-2 rounded-lg bg-neutral-900 border border-neutral-700 outline-none; }
+.btn { @apply px-3 py-2 rounded-lg border border-neutral-700 hover:border-neutral-500 transition inline-flex items-center gap-2; }
+.btn-primary { @apply bg-white text-black font-semibold; }
+.card { @apply bg-neutral-950 border border-neutral-800 rounded-xl p-6; }
+.badge { @apply inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs border border-neutral-700 bg-neutral-900; }
+.table { @apply w-full text-sm; }
+.table th,.table td { @apply border-b border-neutral-800 py-3 text-left; }
+.link { @apply text-blue-400 underline; }

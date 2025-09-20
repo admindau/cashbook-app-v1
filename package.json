@@ -1,12 +1,12 @@
 {
   "name": "cashbook-app",
-  "version": "13.0.0",
+  "version": "13.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate && prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "5.14.0",
@@ -21,6 +21,8 @@
     "tailwindcss": "3.3.3"
   },
   "devDependencies": {
+    "@types/node": "24.5.2",
+    "@types/react": "19.1.13",
     "prisma": "5.14.0",
     "typescript": "5.2.2"
   }
