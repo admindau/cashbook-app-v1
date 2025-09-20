@@ -1,9 +1,11 @@
 
 'use client';
-import type { CashbookData, Transaction } from './types';
+import type { CashbookData, Transaction, Profile } from './types';
 
-const KEY = 'cashbook:data:v3';
+const KEY = 'cashbook:data:v4';
 const AUTH_KEY = 'cashbook:auth';
+const EMAIL_KEY = 'cashbook:email';
+const SESSION_KEY = 'cashbook:session'; // 'active' | ''
 
 export function getAuthHash(): string | null {
   if (typeof window === 'undefined') return null;
@@ -14,9 +16,26 @@ export function setAuthHash(hash: string) {
   if (hash) localStorage.setItem(AUTH_KEY, hash);
   else localStorage.removeItem(AUTH_KEY);
 }
-export function clearAuth() {
+export function getEmail(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(EMAIL_KEY);
+}
+export function setEmail(email: string) {
   if (typeof window === 'undefined') return;
-  localStorage.removeItem(AUTH_KEY);
+  if (email) localStorage.setItem(EMAIL_KEY, email);
+  else localStorage.removeItem(EMAIL_KEY);
+}
+export function isSessionActive(): boolean {
+  if (typeof window === 'undefined') return false;
+  return localStorage.getItem(SESSION_KEY) === 'active';
+}
+export function startSession() {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(SESSION_KEY, 'active');
+}
+export function endSession() {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem(SESSION_KEY);
 }
 
 export function load(): CashbookData {
@@ -69,6 +88,8 @@ export function clearAll() {
   if (typeof window === 'undefined') return;
   localStorage.removeItem(KEY);
   localStorage.removeItem(AUTH_KEY);
+  localStorage.removeItem(EMAIL_KEY);
+  localStorage.removeItem(SESSION_KEY);
 }
 
 export function defaultData(): CashbookData {
@@ -81,4 +102,8 @@ export function defaultData(): CashbookData {
     transactions: [],
     rates: { usd_to_ssp: 1500, kes_to_ssp: 10 }
   };
+}
+
+export function getProfile(): Profile {
+  return { email: getEmail() };
 }
