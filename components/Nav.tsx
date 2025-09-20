@@ -1,7 +1,7 @@
 
 'use client';
 import { usePathname } from 'next/navigation';
-import { ChartLine, LogOut, List, PlusCircle, Search, Settings } from 'lucide-react';
+import { LineChart, LogOut, List, PlusCircle, Search, Settings } from 'lucide-react';
 import { endSession, isSessionActive } from '@/lib/storage';
 import { useToast } from './ToastProvider';
 
@@ -28,7 +28,7 @@ export default function Nav() {
           <span className="font-semibold text-white">Cashbook</span>
         </button>
         <nav className="flex items-center gap-2">
-          <button onClick={()=>safeNav('/dashboard')} className={tab(pathname === '/dashboard')}><ChartLine className="h-4 w-4"/>Dashboard</button>
+          <button onClick={()=>safeNav('/dashboard')} className={tab(pathname === '/dashboard')}><LineChart className="h-4 w-4"/>Dashboard</button>
           <button onClick={()=>safeNav('/transactions')} className={tab(pathname.startsWith('/transactions'))}><List className="h-4 w-4"/>Transactions</button>
           <button onClick={()=>safeNav('/add')} className={tab(pathname === '/add')}><PlusCircle className="h-4 w-4"/>Add</button>
           <button onClick={()=>safeNav('/search')} className={tab(pathname === '/search')}><Search className="h-4 w-4"/>Search</button>
