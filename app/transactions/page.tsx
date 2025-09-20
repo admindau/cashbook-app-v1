@@ -26,7 +26,7 @@ export default function TransactionsPage(){
       .filter(t => (!from || t.date >= from) && (!to || t.date <= to))
       .filter(t => {
         if (!q) return true;
-        const s = `${t.category} ${t.note||''} ${t.amount} ${t.date}`.toLowerCase();
+        const s = `${t.category} ${t.note||''} ${t.amount} ${t.date} ${t.currency}`.toLowerCase();
         return s.includes(q.toLowerCase());
       })
       .sort((a,b)=> b.date.localeCompare(a.date));
@@ -87,7 +87,7 @@ export default function TransactionsPage(){
         </div>
       </div>
 
-      {filtered.length>0 && (
+      {filtered.length>0 and (
         <div className="flex justify-end my-3">
           <button className="btn bg-red-600 text-white flex items-center gap-2" onClick={()=>setShowBulkModal(true)}>
             <Trash className="h-4 w-4" /> Delete All Transactions
@@ -103,6 +103,7 @@ export default function TransactionsPage(){
               <th>Type</th>
               <th>Category</th>
               <th>Amount</th>
+              <th>Currency</th>
               <th>Note</th>
               <th></th>
             </tr>
@@ -115,10 +116,11 @@ export default function TransactionsPage(){
                 <td>{t.category}</td>
                 <td>
                   <div className="flex items-center gap-2">
-                    <span className="text-neutral-400 text-sm">{formatCurrency(t.amount, data.currency)}</span>
+                    <span className="text-neutral-400 text-sm">{formatCurrency(t.amount, t.currency)}</span>
                     <input className="input" type="number" defaultValue={t.amount} onBlur={e=>onInlineEdit(t,'amount', e.target.value)}/>
                   </div>
                 </td>
+                <td>{t.currency}</td>
                 <td><input className="input" defaultValue={t.note||''} onBlur={e=>onInlineEdit(t,'note', e.target.value)}/></td>
                 <td className="text-right">
                   <button title="Delete" className="p-2 rounded-lg border border-red-700 text-red-500 hover:bg-red-600/10" onClick={()=>confirmDelete(t)}>

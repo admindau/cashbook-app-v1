@@ -1,19 +1,8 @@
-
 'use client';
-type Props = {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  message: string;
-  confirmText?: string;
-  cancelText?: string;
-  variant?: 'default' | 'success' | 'danger';
-};
-export default function Modal({ isOpen, onClose, onConfirm, title, message, confirmText='Confirm', cancelText='Cancel', variant='default' }: Props){
+export default function Modal({isOpen,onClose,onConfirm,title,message,confirmText='Confirm',cancelText='Cancel',variant='default'}:{isOpen:boolean;onClose:()=>void;onConfirm:()=>void;title:string;message:string;confirmText?:string;cancelText?:string;variant?:'default'|'success'|'danger';}){
   if(!isOpen) return null;
-  const confirmBase = 'px-4 py-2 rounded-lg text-white';
-  const confirmClass = variant==='danger' ? `${confirmBase} bg-red-600` : variant==='success' ? `${confirmBase} bg-green-600` : `${confirmBase} bg-neutral-700`;
+  const confirmBase='px-4 py-2 rounded-lg text-white';
+  const confirmClass = variant==='danger'?`${confirmBase} bg-red-600`:variant==='success'?`${confirmBase} bg-green-600`:`${confirmBase} bg-neutral-700`;
   return (
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
       <div className="bg-neutral-900 rounded-xl p-6 shadow-xl w-full max-w-md text-center">

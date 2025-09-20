@@ -2,18 +2,8 @@
 'use client';
 import type { CashbookData, Transaction } from './types';
 
-const KEY = 'cashbook:data:v2';
+const KEY = 'cashbook:data:v3';
 const AUTH_KEY = 'cashbook:auth';
-const THEME_KEY = 'cashbook:theme';
-
-export function getTheme(): 'dark'|'light' {
-  if (typeof window === 'undefined') return 'dark';
-  return (localStorage.getItem(THEME_KEY) as any) || 'dark';
-}
-export function setTheme(t: 'dark'|'light') {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem(THEME_KEY, t);
-}
 
 export function getAuthHash(): string | null {
   if (typeof window === 'undefined') return null;
@@ -90,6 +80,10 @@ export function defaultData(): CashbookData {
       income: ['Salary','Bonus','Investment','Gift'],
       expense: ['Food','Transport','Rent','Utilities','Health','Education','Leisure']
     },
-    transactions: []
+    transactions: [],
+    rates: {
+      usd_to_ssp: 1500,
+      kes_to_ssp: 10
+    }
   };
 }

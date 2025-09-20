@@ -8,31 +8,42 @@ import { Bar, Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
+type Totals = Record<string, { income: number; expense: number }>; // by currency
+
 export default function Dashboard(){
   const [tick, setTick] = useState(0);
   const data = useMemo(()=>load(), [tick]);
-  const symbol = symbolFor(data.currency);
 
-  const totals = useMemo(()=>{
-    const income = data.transactions.filter(t=>t.type==='income').reduce((a,b)=>a+b.amount,0);
-    const expense = data.transactions.filter(t=>t.type==='expense').reduce((a,b)=>a+b.amount,0);
-    return { income, expense, balance: income-expense };
-  }, [data]);
+  const totalsByCurrency: Totals = useMemo(()=>{
+    const map: Totals = {};
+    data.transactions.forEach(t=>{
+      if(!map[t.currency]) map[t.currency] = { income:0, expense:0 };
+      map[t.currency][t.type] += t.amount;
+    });
+    return map;
+  },[data]);
 
   const byCategory = useMemo(()=>{
-    const map: Record<string, number> = {};
+    const m: Record<string, number> = {};
     data.transactions.forEach(t=>{
-      const key = `${t.type}:${t.category}`;
-      map[key] = (map[key]||0) + t.amount;
+      const key = `${t.currency}:${t.type}:${t.category}`;
+      m[key] = (m[key]||0) + t.amount;
     });
-    return { labels: Object.keys(map), values: Object.values(map) };
-  }, [data]);
+    return m;
+  },[data]);
 
   useEffect(()=>{
     const on = () => setTick(x=>x+1);
     window.addEventListener('storage', on);
     return ()=>window.removeEventListener('storage', on);
   },[]);
+
+  const doughnutLabels:string[] = [];
+  const doughnutValues:number[] = [];
+  Object.entries(totalsByCurrency).forEach(([cur, vals])=>{
+    doughnutLabels.push(`Income (${symbolFor(cur)})`); doughnutValues.push(vals.income);
+    doughnutLabels.push(`Expense (${symbolFor(cur)})`); doughnutValues.push(vals.expense);
+  });
 
   return (
     <Shell>
@@ -42,49 +53,32 @@ export default function Dashboard(){
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">
-        <Stat title="Income" value={formatCurrency(totals.income, data.currency)} />
-        <Stat title="Expense" value={formatCurrency(totals.expense, data.currency)} />
-        <Stat title="Balance" value={formatCurrency(totals.balance, data.currency)} />
+        {Object.entries(totalsByCurrency).map(([cur, v])=> (
+          <div key={cur} className="card">
+            <div className="text-sm text-neutral-400">Income ({cur})</div>
+            <div className="text-2xl font-semibold">{formatCurrency(v.income, cur)}</div>
+            <div className="text-sm text-neutral-400 mt-3">Expense ({cur})</div>
+            <div className="text-2xl font-semibold">{formatCurrency(v.expense, cur)}</div>
+            <div className="text-sm text-neutral-400 mt-3">Balance ({cur})</div>
+            <div className="text-2xl font-semibold">{formatCurrency(v.income - v.expense, cur)}</div>
+          </div>
+        ))}
+        {Object.keys(totalsByCurrency).length===0 && <div className="card">No data yet.</div>}
       </div>
 
       <div className="grid md:grid-cols-2 gap-6 mt-6">
         <div className="card">
-          <h2 className="text-lg font-semibold mb-4">Totals by Type ({symbol})</h2>
-          <Doughnut data={{
-            labels: [`Income (${symbol})`, `Expense (${symbol})`],
-            datasets: [{ data: [totals.income, totals.expense] }]
-          }}/>
+          <h2 className="text-lg font-semibold mb-4">Totals by Type (native currencies)</h2>
+          <Doughnut data={{ labels: doughnutLabels, datasets: [{ data: doughnutValues }] }}/>
         </div>
         <div className="card">
-          <h2 className="text-lg font-semibold mb-4">By Category</h2>
+          <h2 className="text-lg font-semibold mb-4">By Category (currency:type:category)</h2>
           <Bar data={{
-            labels: byCategory.labels,
-            datasets: [{ label: `Amount (${symbol})`, data: byCategory.values }]
-          }}
-          options={{
-            scales: {
-              y: { ticks: { callback: (v)=> `${symbol} ${Number(v).toLocaleString()}` } }
-            },
-            plugins: {
-              tooltip: {
-                callbacks: {
-                  label: (ctx)=> `${symbol} ${Number(ctx.parsed.y ?? ctx.parsed).toLocaleString()}`
-                }
-              }
-            }
-          }}
-          />
+            labels: Object.keys(byCategory),
+            datasets: [{ label: 'Amount (native)', data: Object.values(byCategory) }]
+          }}/>
         </div>
       </div>
     </Shell>
-  );
-}
-
-function Stat({title, value}:{title:string; value:string}){
-  return (
-    <div className="card">
-      <div className="text-sm text-neutral-400">{title}</div>
-      <div className="text-2xl font-semibold mt-1">{value}</div>
-    </div>
   );
 }
