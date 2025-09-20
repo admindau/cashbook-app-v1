@@ -19,8 +19,9 @@ export default function AddPage(){
   const [note, setNote] = useState('');
 
   const submit = () => {
-    if (amount <= 0) return alert('Amount must be greater than 0.');
-    add({ id: nanoid(), type, category, amount, currency, date, note });
+    const a = Number(amount);
+    if (!Number.isFinite(a) || a <= 0) return alert('Amount must be greater than 0.');
+    add({ id: nanoid(), type, category, amount: a, currency, date, note });
     toast.show('Transaction added successfully.');
   };
 

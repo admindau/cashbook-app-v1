@@ -87,7 +87,7 @@ export default function TransactionsPage(){
         </div>
       </div>
 
-      {filtered.length>0 and (
+      {filtered.length>0 && (
         <div className="flex justify-end my-3">
           <button className="btn bg-red-600 text-white flex items-center gap-2" onClick={()=>setShowBulkModal(true)}>
             <Trash className="h-4 w-4" /> Delete All Transactions

@@ -2,7 +2,7 @@
 export function nanoid(size = 12) {
   const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let id = '';
-  const cryptoObj = typeof crypto !== 'undefined' ? crypto : null;
+  const cryptoObj: any = typeof crypto !== 'undefined' ? crypto : null;
   if (cryptoObj && 'getRandomValues' in cryptoObj) {
     const arr = new Uint8Array(size);
     cryptoObj.getRandomValues(arr);

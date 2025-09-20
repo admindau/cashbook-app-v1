@@ -20,9 +20,7 @@ export function clearAuth() {
 }
 
 export function load(): CashbookData {
-  if (typeof window === 'undefined') {
-    return defaultData();
-  }
+  if (typeof window === 'undefined') return defaultData();
   const raw = localStorage.getItem(KEY);
   if (!raw) {
     const d = defaultData();
@@ -81,9 +79,6 @@ export function defaultData(): CashbookData {
       expense: ['Food','Transport','Rent','Utilities','Health','Education','Leisure']
     },
     transactions: [],
-    rates: {
-      usd_to_ssp: 1500,
-      kes_to_ssp: 10
-    }
+    rates: { usd_to_ssp: 1500, kes_to_ssp: 10 }
   };
 }

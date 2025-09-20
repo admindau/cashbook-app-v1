@@ -4,7 +4,7 @@ export type Cur = 'SSP' | 'USD' | 'KES';
 
 export interface Transaction {
   id: string;
-  date: string;
+  date: string;       // YYYY-MM-DD
   type: TxType;
   category: string;
   amount: number;
@@ -19,7 +19,7 @@ export interface Rates {
 
 export interface CashbookData {
   transactions: Transaction[];
-  currency: Cur; // default preference (kept for compatibility)
+  currency: Cur; // legacy preference (not used for conversion)
   categories: { income: string[]; expense: string[] };
   rates: Rates;
 }
