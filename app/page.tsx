@@ -7,19 +7,16 @@ import { sha256 } from '@/lib/auth';
 import Link from 'next/link';
 
 export default function Home() {
-  const [hasPassword, setHasPassword] = useState<boolean>(false);
-  const [mode, setMode] = useState<'login'|'setup'>('login');
+  const [mode, setMode] = useState<'login'|'setup'>('setup');
   const [p1, setP1] = useState('');
   const [p2, setP2] = useState('');
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    setHasPassword(!!getAuthHash());
     setMode(getAuthHash() ? 'login' : 'setup');
   }, []);
 
   const onSetup = async () => {
-    setError('');
     if (p1.length < 4) return setError('Use at least 4 characters.');
     if (p1 !== p2) return setError('Passwords do not match.');
     setAuthHash(await sha256(p1));
@@ -27,57 +24,27 @@ export default function Home() {
   };
 
   const onLogin = async () => {
-    setError('');
     const hash = await sha256(p1);
-    if (hash === getAuthHash()) {
-      location.href = '/dashboard';
-    } else {
-      setError('Incorrect password.');
-    }
+    if (hash === getAuthHash()) location.href = '/dashboard';
+    else setError('Incorrect password.');
   };
 
   return (
     <Shell>
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="card">
-          <h1 className="text-2xl font-semibold mb-2">{mode==='login'?'Welcome back':'Set a password'}</h1>
-          <p className="text-neutral-400 mb-6">
+      <div className="card max-w-md mx-auto text-center">
+        <img src="/logo.svg" alt="Savvy Gorilla Cashbook Logo" className="h-16 mx-auto mb-4" />
+        <h1 className="text-2xl font-semibold mb-4">{mode === 'login' ? 'Welcome back' : 'Set a password'}</h1>
+        <div className="space-y-3">
+          <input type="password" className="input" placeholder="Password" value={p1} onChange={e=>setP1(e.target.value)} />
+          {mode==='setup' && <input type="password" className="input" placeholder="Confirm password" value={p2} onChange={e=>setP2(e.target.value)} />}
+          {error && <div className="text-sm text-red-400">{error}</div>}
+          <div className="flex gap-2 pt-2">
             {mode==='login'
-              ? 'Enter your password to access your cashbook.'
-              : 'This protects your data on this device. You can change it later by resetting storage.'}
-          </p>
-          <div className="space-y-3">
-            <label className="block">
-              <span className="text-sm text-neutral-300">Password</span>
-              <input type="password" className="input mt-1" value={p1} onChange={e=>setP1(e.target.value)} placeholder="••••••••"/>
-            </label>
-            {mode==='setup' && (
-              <label className="block">
-                <span className="text-sm text-neutral-300">Confirm Password</span>
-                <input type="password" className="input mt-1" value={p2} onChange={e=>setP2(e.target.value)} placeholder="••••••••"/>
-              </label>
-            )}
-            {error && <div className="text-sm text-red-400">{error}</div>}
-            <div className="flex gap-2 pt-2">
-              {mode==='login'
-                ? <button className="btn btn-primary" onClick={onLogin}>Login</button>
-                : <button className="btn btn-primary" onClick={onSetup}>Create Password</button>}
-            </div>
+              ? <button className="btn btn-primary w-full" onClick={onLogin}>Login</button>
+              : <button className="btn btn-primary w-full" onClick={onSetup}>Create Password</button>}
           </div>
         </div>
-        <div className="card">
-          <h2 className="text-xl font-semibold mb-2">What you get</h2>
-          <ul className="list-disc pl-5 space-y-2 text-neutral-300">
-            <li>Track income and expenses</li>
-            <li>Modern charts & dashboard</li>
-            <li>Search & filters</li>
-            <li>CSV export</li>
-            <li>Local-only data (no server)</li>
-          </ul>
-          <div className="mt-6">
-            <Link href="/dashboard" className="link">Preview the Dashboard</Link> <span className="text-neutral-500">(requires login)</span>
-          </div>
-        </div>
+        <p className="text-xs text-neutral-400 mt-4">Powered by <Link href="https://savvygorilla.tech" className="underline">Savvy Gorilla</Link></p>
       </div>
     </Shell>
   );

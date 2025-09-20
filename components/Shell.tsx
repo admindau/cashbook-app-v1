@@ -5,11 +5,12 @@ import { ReactNode } from 'react';
 
 export default function Shell({children}:{children:ReactNode}){
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Nav/>
-      <main className="container py-6 space-y-6">{children}</main>
-      <footer className="border-t border-neutral-800 py-8 mt-10 text-center text-sm text-neutral-400">
-        Cashbook • Data stored locally in your browser
+      <main className="flex-1 container mx-auto px-4 py-6">{children}</main>
+      <footer className="border-t border-neutral-800 text-center py-6 text-sm text-neutral-400 flex items-center justify-center gap-2">
+        <img src="/logo.svg" alt="Savvy Gorilla Logo" className="h-4" />
+        Cashbook • Savvy Gorilla
       </footer>
     </div>
   );
