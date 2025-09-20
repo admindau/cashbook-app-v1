@@ -1,15 +1,13 @@
 
 export type TxType = 'income' | 'expense';
-
 export interface Transaction {
   id: string;
-  date: string; // ISO date
+  date: string;
   type: TxType;
   category: string;
   amount: number;
   note?: string;
 }
-
 export interface CashbookData {
   transactions: Transaction[];
   currency: string;

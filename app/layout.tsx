@@ -1,6 +1,7 @@
 
 import './globals.css';
 import type { Metadata } from 'next';
+import ToastProvider from '@/components/ToastProvider';
 
 export const metadata: Metadata = {
   title: 'Cashbook',
@@ -10,7 +11,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <ToastProvider>
+          {children}
+        </ToastProvider>
+      </body>
     </html>
   );
 }
