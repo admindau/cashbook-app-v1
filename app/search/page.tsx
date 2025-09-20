@@ -1,5 +1,6 @@
 
 'use client';
+import Protected from '@/components/Protected';
 import Shell from '@/components/Shell';
 import { load } from '@/lib/storage';
 import { useMemo, useState } from 'react';
@@ -15,27 +16,29 @@ export default function SearchPage(){
   },[data, q]);
 
   return (
-    <Shell>
-      <div className="flex items-center gap-2 mb-6">
-        <img src="/logo.png" alt="Savvy Rilla Logo" className="h-8" />
-        <h2 className="text-lg font-semibold">Search</h2>
-      </div>
-
-      <div className="card max-w-2xl mx-auto">
-        <input className="input" placeholder="Search terms..." value={q} onChange={e=>setQ(e.target.value)}/>
-        <div className="mt-4 space-y-2">
-          {results.map(r=>(
-            <div key={r.id} className="flex justify-between border border-neutral-800 rounded-xl p-3">
-              <div>
-                <div className="text-sm text-neutral-400">{r.date} • {r.type} • {r.category} • {r.currency}</div>
-                <div className="font-medium">{r.note}</div>
-              </div>
-              <div className="font-semibold">{formatCurrency(r.amount, r.currency)}</div>
-            </div>
-          ))}
-          {q && results.length===0 && <div className="text-neutral-500">No results.</div>}
+    <Protected>
+      <Shell>
+        <div className="flex items-center gap-2 mb-6">
+          <img src="/logo.png" alt="Savvy Rilla Logo" className="h-8" />
+          <h2 className="text-lg font-semibold">Search</h2>
         </div>
-      </div>
-    </Shell>
+
+        <div className="card max-w-2xl mx-auto">
+          <input className="input" placeholder="Search terms..." value={q} onChange={e=>setQ(e.target.value)}/>
+          <div className="mt-4 space-y-2">
+            {results.map(r=>(
+              <div key={r.id} className="flex justify-between border border-neutral-800 rounded-xl p-3">
+                <div>
+                  <div className="text-sm text-neutral-400">{r.date} • {r.type} • {r.category} • {r.currency}</div>
+                  <div className="font-medium">{r.note}</div>
+                </div>
+                <div className="font-semibold">{formatCurrency(r.amount, r.currency)}</div>
+              </div>
+            ))}
+            {q && results.length===0 and <div className="text-neutral-500">No results.</div>}
+          </div>
+        </div>
+      </Shell>
+    </Protected>
   );
 }

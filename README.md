@@ -1,12 +1,26 @@
+# Cashbook (v11.9.2)
 
+Savvy Rilla–branded cashbook with email+password auth, protected routes, reusable modal, toasts, charts, search, and multi-currency with embedded converter in Settings.
 
-## New in v11.8
-- Login flow now shows a success toast ('Welcome back!') before redirecting to the Dashboard.
+## Key Features
+- Email + Password auth (signup & login)
+- Logout → /login (email pre-filled)
+- Route guards + NavBar guards with **toast** (“Please log in first.”)
+- Signup success toast (“Account created successfully.”)
+- Login success toast (“Welcome back!”)
+- Transactions with per-transaction currencies (SSP, USD, KES)
+- Dashboard charts (Chart.js)
+- Search
+- Settings: Profile (update email & change password), Exchange Rates, Converter, Danger Zone (reset with modal)
+- Savvy Rilla logo + favicon
 
+## Run
+```bash
+npm i
+npm run dev
+```
 
-## New in v11.9
-- Signup flow now shows a success toast ('Account created successfully.') before redirecting to the Dashboard.
-
-
-## New in v11.9.1
-- Added all standard root-level config files (.gitignore, next.config.js, package.json, postcss.config.js, tailwind.config.js, tsconfig.json, next-env.d.ts) with locked dependency versions for stable Vercel builds.
+## Build
+```bash
+npm run build && npm start
+```

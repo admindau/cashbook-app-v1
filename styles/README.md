@@ -1,0 +1,1 @@
+Tailwind styles are in app/globals.css. This folder is reserved for future styles.

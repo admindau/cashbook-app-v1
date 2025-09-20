@@ -1,5 +1,6 @@
 
 'use client';
+import Protected from '@/components/Protected';
 import Shell from '@/components/Shell';
 import { load } from '@/lib/storage';
 import { formatCurrency, symbolFor } from '@/lib/format';
@@ -46,39 +47,41 @@ export default function Dashboard(){
   });
 
   return (
-    <Shell>
-      <div className="flex items-center gap-2 mb-6">
-        <img src="/logo.png" alt="Savvy Rilla Logo" className="h-8" />
-        <h2 className="text-lg font-semibold">Dashboard</h2>
-      </div>
+    <Protected>
+      <Shell>
+        <div className="flex items-center gap-2 mb-6">
+          <img src="/logo.png" alt="Savvy Rilla Logo" className="h-8" />
+          <h2 className="text-lg font-semibold">Dashboard</h2>
+        </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        {Object.entries(totalsByCurrency).map(([cur, v])=> (
-          <div key={cur} className="card">
-            <div className="text-sm text-neutral-400">Income ({cur})</div>
-            <div className="text-2xl font-semibold">{formatCurrency(v.income, cur)}</div>
-            <div className="text-sm text-neutral-400 mt-3">Expense ({cur})</div>
-            <div className="text-2xl font-semibold">{formatCurrency(v.expense, cur)}</div>
-            <div className="text-sm text-neutral-400 mt-3">Balance ({cur})</div>
-            <div className="text-2xl font-semibold">{formatCurrency(v.income - v.expense, cur)}</div>
+        <div className="grid md:grid-cols-3 gap-4">
+          {Object.entries(totalsByCurrency).map(([cur, v])=> (
+            <div key={cur} className="card">
+              <div className="text-sm text-neutral-400">Income ({cur})</div>
+              <div className="text-2xl font-semibold">{formatCurrency(v.income, cur)}</div>
+              <div className="text-sm text-neutral-400 mt-3">Expense ({cur})</div>
+              <div className="text-2xl font-semibold">{formatCurrency(v.expense, cur)}</div>
+              <div className="text-sm text-neutral-400 mt-3">Balance ({cur})</div>
+              <div className="text-2xl font-semibold">{formatCurrency(v.income - v.expense, cur)}</div>
+            </div>
+          ))}
+          {Object.keys(totalsByCurrency).length===0 and <div className="card">No data yet.</div>}
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 mt-6">
+          <div className="card">
+            <h2 className="text-lg font-semibold mb-4">Totals by Type (native currencies)</h2>
+            <Doughnut data={{ labels: doughnutLabels, datasets: [{ data: doughnutValues }] }}/>
           </div>
-        ))}
-        {Object.keys(totalsByCurrency).length===0 && <div className="card">No data yet.</div>}
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-6 mt-6">
-        <div className="card">
-          <h2 className="text-lg font-semibold mb-4">Totals by Type (native currencies)</h2>
-          <Doughnut data={{ labels: doughnutLabels, datasets: [{ data: doughnutValues }] }}/>
+          <div className="card">
+            <h2 className="text-lg font-semibold mb-4">By Category (currency:type:category)</h2>
+            <Bar data={{
+              labels: Object.keys(byCategory),
+              datasets: [{ label: 'Amount (native)', data: Object.values(byCategory) }]
+            }}/>
+          </div>
         </div>
-        <div className="card">
-          <h2 className="text-lg font-semibold mb-4">By Category (currency:type:category)</h2>
-          <Bar data={{
-            labels: Object.keys(byCategory),
-            datasets: [{ label: 'Amount (native)', data: Object.values(byCategory) }]
-          }}/>
-        </div>
-      </div>
-    </Shell>
+      </Shell>
+    </Protected>
   );
 }
